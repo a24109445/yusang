@@ -39,7 +39,7 @@ npm test
 
 ## GitHub Pages 部署方式
 
-1. 在 GitHub 建立名為 `yusang-helper` 的 Repository。
+1. 在 GitHub 建立名為 `yusang` 的 Repository。
 2. 將此資料夾內的全部檔案提交並 Push 到 `main` branch。
 3. 開啟 Repository 的 **Settings**。
 4. 在左側選擇 **Pages**。
@@ -47,7 +47,7 @@ npm test
 6. Branch 選擇 `main`，資料夾選擇 `/ (root)`。
 7. 點擊 **Save**，等待 GitHub 顯示已發布的 HTTPS 網址。
 
-所有靜態資源都使用相對路徑，可在 `https://USERNAME.github.io/yusang-helper/` 這類子路徑正常運作。Service Worker 需要 HTTPS；GitHub Pages 與 Cloudflare Pages 均會提供 HTTPS。
+目前公開網址為 `https://a24109445.github.io/yusang/`。所有靜態資源都使用相對路徑，因此可在 GitHub Pages 子路徑正常運作。Service Worker 需要 HTTPS；GitHub Pages 會自動提供 HTTPS。
 
 ## iPhone 安裝方式
 
