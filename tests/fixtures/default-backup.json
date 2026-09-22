@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "exportDate": "2026-09-22T00:00:00.000Z",
+  "recipes": {
+    "sweetPotato": { "name": "地瓜", "baseWeight": 1000, "tapiocaStarch": 0, "glutinousRiceFlour": 0, "potatoStarch": 0, "sugar": 0, "isConfigured": false },
+    "purpleSweetPotato": { "name": "紫心地瓜", "baseWeight": 1000, "tapiocaStarch": 0, "glutinousRiceFlour": 0, "potatoStarch": 0, "sugar": 0, "isConfigured": false },
+    "taro": { "name": "芋頭", "baseWeight": 1000, "tapiocaStarch": 0, "glutinousRiceFlour": 0, "potatoStarch": 0, "sugar": 0, "isConfigured": false },
+    "yam": { "name": "山藥", "baseWeight": 1000, "tapiocaStarch": 0, "glutinousRiceFlour": 0, "potatoStarch": 0, "sugar": 0, "isConfigured": false },
+    "potato": { "name": "馬鈴薯", "baseWeight": 1000, "tapiocaStarch": 0, "glutinousRiceFlour": 0, "potatoStarch": 0, "sugar": 0, "isConfigured": false }
+  }
+}

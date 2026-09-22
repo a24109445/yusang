@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#4b2d4f">
+    <meta name="description" content="芋桑製作冷凍芋圓時使用的離線配方計算工具。">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="芋桑小幫手">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='15' fill='%23f7f1e7'/%3E%3Ccircle cx='32' cy='29' r='19' fill='%234b2d4f'/%3E%3Cpath d='M22 39c4-8 16-8 20 0' stroke='%23f7f1e7' stroke-width='4' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="./css/style.css">
+    <title>芋桑小幫手</title>
+  </head>
+  <body>
+    <div class="app-shell">
+      <main id="app" class="app" tabindex="-1">
+        <section class="view view--active" data-view="home" aria-labelledby="home-title" tabindex="-1">
+          <header class="topbar topbar--home">
+            <div>
+              <p class="brand-kicker">YUSANG KITCHEN</p>
+              <h1 id="home-title">芋桑小幫手</h1>
+            </div>
+            <button class="settings-button" type="button" data-action="request-settings" aria-label="進入配方設定">
+              <span aria-hidden="true">⚙</span>
+              <span>配方設定</span>
+            </button>
+          </header>
+
+          <div class="home-intro">
+            <p class="eyebrow">配方計算</p>
+            <h2>今天要做哪一種？</h2>
+            <p>選擇處理完成的原料，再輸入秤好的重量。</p>
+          </div>
+
+          <div class="ingredient-grid" id="ingredient-grid" aria-label="選擇原料">
+            <button class="ingredient-card" type="button" data-recipe-id="sweetPotato">
+              <span class="ingredient-card__number">01</span>
+              <span class="ingredient-card__name">地瓜</span>
+              <span class="ingredient-card__status">尚未設定</span>
+            </button>
+            <button class="ingredient-card" type="button" data-recipe-id="purpleSweetPotato">
+              <span class="ingredient-card__number">02</span>
+              <span class="ingredient-card__name">紫心地瓜</span>
+              <span class="ingredient-card__status">尚未設定</span>
+            </button>
+            <button class="ingredient-card" type="button" data-recipe-id="taro">
+              <span class="ingredient-card__number">03</span>
+              <span class="ingredient-card__name">芋頭</span>
+              <span class="ingredient-card__status">尚未設定</span>
+            </button>
+            <button class="ingredient-card" type="button" data-recipe-id="yam">
+              <span class="ingredient-card__number">04</span>
+              <span class="ingredient-card__name">山藥</span>
+              <span class="ingredient-card__status">尚未設定</span>
+            </button>
+            <button class="ingredient-card" type="button" data-recipe-id="potato">
+              <span class="ingredient-card__number">05</span>
+              <span class="ingredient-card__name">馬鈴薯</span>
+              <span class="ingredient-card__status">尚未設定</span>
+            </button>
+          </div>
+        </section>
+
+        <section class="view" data-view="calculator" aria-labelledby="calculator-title" tabindex="-1">
+          <header class="topbar">
+            <button class="back-button" type="button" data-action="go-home">← 返回</button>
+            <p class="topbar__context">配方計算</p>
+          </header>
+
+          <div class="section-heading">
+            <p class="eyebrow">已選擇原料</p>
+            <h2 id="calculator-title">芋頭配方</h2>
+          </div>
+
+          <div class="weight-panel">
+            <label for="raw-weight">原料重量</label>
+            <div class="weight-input-wrap">
+              <input id="raw-weight" name="rawWeight" type="text" inputmode="decimal" autocomplete="off" placeholder="0" aria-describedby="weight-message">
+              <span aria-hidden="true">g</span>
+            </div>
+            <p id="weight-message" class="field-message" aria-live="polite">輸入處理完成後的重量</p>
+          </div>
+
+          <div id="recipe-unavailable" class="empty-notice" hidden>
+            <strong>此原料尚未設定完整配方</strong>
+            <p>請先到配方設定輸入比例，再回來計算。</p>
+            <button class="secondary-button" type="button" data-action="request-settings">前往配方設定</button>
+          </div>
+
+          <section id="results-section" class="results-section" aria-labelledby="results-title" aria-live="polite" hidden>
+            <div class="results-heading">
+              <div>
+                <p class="eyebrow">計算結果</p>
+                <h3 id="results-title">需要加入</h3>
+              </div>
+              <button class="text-button" type="button" data-action="clear-weight">清除重量</button>
+            </div>
+            <div class="result-grid">
+              <article class="result-card">
+                <p>樹薯粉</p>
+                <div><strong data-result="tapiocaStarch">0</strong><span>g</span></div>
+              </article>
+              <article class="result-card">
+                <p>糯米粉</p>
+                <div><strong data-result="glutinousRiceFlour">0</strong><span>g</span></div>
+              </article>
+              <article class="result-card">
+                <p>太白粉</p>
+                <div><strong data-result="potatoStarch">0</strong><span>g</span></div>
+              </article>
+              <article class="result-card">
+                <p>糖</p>
+                <div><strong data-result="sugar">0</strong><span>g</span></div>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-view="settings" aria-labelledby="settings-title" tabindex="-1">
+          <header class="topbar">
+            <button class="back-button" type="button" data-action="go-home">← 返回首頁</button>
+            <p class="topbar__context">裝置內設定</p>
+          </header>
+
+          <div class="section-heading section-heading--compact">
+            <p class="eyebrow">配方管理</p>
+            <h2 id="settings-title">配方設定</h2>
+            <p>選擇原料以設定各自的配方比例。</p>
+          </div>
+
+          <div class="settings-list" id="settings-list" aria-label="選擇要編輯的配方"></div>
+
+          <section class="utility-panel" aria-labelledby="backup-title">
+            <div class="utility-panel__heading">
+              <p class="eyebrow">僅儲存在此裝置</p>
+              <h3 id="backup-title">配方備份</h3>
+            </div>
+            <p>匯出 JSON 備份，換手機或清除瀏覽器資料前請先保存。</p>
+            <div class="button-stack">
+              <button class="primary-button" type="button" data-action="export-recipes">匯出配方備份</button>
+              <button class="secondary-button" type="button" data-action="choose-import">匯入配方備份</button>
+              <input id="import-file" type="file" accept="application/json,.json" hidden>
+            </div>
+          </section>
+
+          <button class="danger-button" type="button" data-action="request-reset">恢復預設設定</button>
+        </section>
+
+        <section class="view" data-view="recipe-editor" aria-labelledby="editor-title" tabindex="-1">
+          <header class="topbar">
+            <button class="back-button" type="button" data-action="go-settings">← 返回配方設定</button>
+            <p class="topbar__context">編輯比例</p>
+          </header>
+
+          <div class="section-heading section-heading--compact">
+            <p class="eyebrow">個別配方</p>
+            <h2 id="editor-title">芋頭配方</h2>
+            <p>每個數值都以公克為單位，可輸入小數。</p>
+          </div>
+
+          <form id="recipe-form" class="recipe-form" novalidate>
+            <div class="form-field form-field--featured">
+              <label for="base-weight">基準原料重量</label>
+              <div class="unit-input">
+                <input id="base-weight" name="baseWeight" type="text" inputmode="decimal" autocomplete="off" required>
+                <span>g</span>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="tapioca-starch">樹薯粉</label>
+              <div class="unit-input">
+                <input id="tapioca-starch" name="tapiocaStarch" type="text" inputmode="decimal" autocomplete="off" required>
+                <span>g</span>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="glutinous-rice-flour">糯米粉</label>
+              <div class="unit-input">
+                <input id="glutinous-rice-flour" name="glutinousRiceFlour" type="text" inputmode="decimal" autocomplete="off" required>
+                <span>g</span>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="potato-starch">太白粉</label>
+              <div class="unit-input">
+                <input id="potato-starch" name="potatoStarch" type="text" inputmode="decimal" autocomplete="off" required>
+                <span>g</span>
+              </div>
+            </div>
+            <div class="form-field">
+              <label for="sugar">糖</label>
+              <div class="unit-input">
+                <input id="sugar" name="sugar" type="text" inputmode="decimal" autocomplete="off" required>
+                <span>g</span>
+              </div>
+            </div>
+            <p id="form-error" class="form-error" role="alert" hidden></p>
+            <button class="primary-button primary-button--save" type="submit">儲存配方</button>
+          </form>
+        </section>
+      </main>
+    </div>
+
+    <dialog id="settings-access-dialog" class="app-dialog">
+      <div class="dialog-mark" aria-hidden="true">⚙</div>
+      <h2>即將進入配方設定</h2>
+      <p>為避免製作時誤觸，請確認要繼續編輯配方。</p>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" data-action="cancel-settings">取消</button>
+        <button class="primary-button" type="button" data-action="confirm-settings">繼續</button>
+      </div>
+    </dialog>
+
+    <dialog id="reset-dialog" class="app-dialog">
+      <div class="dialog-mark dialog-mark--danger" aria-hidden="true">!</div>
+      <h2>清除所有配方？</h2>
+      <p>這將清除目前所有配方設定，且無法復原。建議先匯出備份。</p>
+      <div class="dialog-actions">
+        <button class="secondary-button" type="button" data-action="cancel-reset">取消</button>
+        <button class="danger-confirm-button" type="button" data-action="confirm-reset">確定清除</button>
+      </div>
+    </dialog>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="module" src="./js/app.js"></script>
+    <script type="module" src="./js/pwa.js"></script>
+  </body>
+</html>

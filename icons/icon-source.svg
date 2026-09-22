@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="112" fill="#f7f1e7"/>
+  <circle cx="256" cy="250" r="164" fill="#4b2d4f"/>
+  <text x="256" y="282" text-anchor="middle" font-family="Microsoft JhengHei, PingFang TC, sans-serif" font-size="104" font-weight="700" fill="#fffdf8">芋桑</text>
+  <path d="M196 358c34 24 86 24 120 0" fill="none" stroke="#d7c2d7" stroke-width="14" stroke-linecap="round"/>
+</svg>
