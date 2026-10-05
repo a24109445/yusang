@@ -1,4 +1,4 @@
-const CACHE_NAME = "yusang-helper-v4";
+const CACHE_NAME = "yusang-helper-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,8 @@ const APP_SHELL = [
   "./js/app.js",
   "./js/calculator.js",
   "./js/storage.js",
+  "./js/inventory.js",
+  "./js/inventory-ui.js",
   "./js/pwa.js",
   "./manifest.json",
   "./icons/icon-192.png",
