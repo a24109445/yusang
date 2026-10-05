@@ -48,6 +48,22 @@ export function calculateRecipe(recipe, rawWeight) {
   return result;
 }
 
+export function calculateTotalWeight(rawWeight, materials) {
+  if (!Number.isFinite(rawWeight) || rawWeight < 0 || !materials) {
+    throw new TypeError("重量資料無效");
+  }
+
+  let total = rawWeight;
+  for (const field of MATERIAL_FIELDS) {
+    const weight = materials[field];
+    if (!Number.isFinite(weight) || weight < 0) throw new TypeError("材料重量無效");
+    total += weight;
+  }
+  if (!Number.isFinite(total)) throw new RangeError("總重超出可用範圍");
+
+  return Math.round(total + Number.EPSILON * total * 2);
+}
+
 export function formatWeight(value) {
   if (!Number.isFinite(value)) return "—";
   const rounded = Math.round((value + Number.EPSILON) * 10) / 10;

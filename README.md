@@ -4,6 +4,8 @@
 
 「芋桑小幫手」是製作冷凍芋圓時使用的手機優先配方計算工具。可分別保存地瓜、紫心地瓜、芋頭、山藥與馬鈴薯的配方，輸入處理完成後的原料重量後即時計算樹薯粉、糯米粉、太白粉與糖的用量。
 
+計算頁另顯示「總重」：原料重量加上畫面顯示的四種材料重量，最後四捨五入至整數 g。
+
 本專案是純 HTML、CSS 與 Vanilla JavaScript PWA，沒有後端、資料庫、分析工具或外部 API。所有配方只儲存在目前瀏覽器的 `localStorage`，不會傳送到網路或其他裝置。
 
 ## 本機啟動方式
@@ -93,5 +95,4 @@ npm test
 
 ## 更新 Service Worker
 
-每次修改需要離線快取的程式後，請將 `service-worker.js` 的 `CACHE_NAME` 版本往上調整，例如從 `yusang-helper-v2` 改成 `yusang-helper-v3`。新版啟用時會自動清除舊 Cache。
-
+每次修改需要離線快取的程式後，請將 `service-worker.js` 的 `CACHE_NAME` 版本往上調整，例如從 `yusang-helper-v3` 改成 `yusang-helper-v4`。新版啟用時會自動清除舊 Cache。

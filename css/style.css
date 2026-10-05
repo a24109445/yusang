@@ -193,6 +193,9 @@ h2 { margin-bottom: 10px; font-size: clamp(2rem, 9vw, 3.35rem); line-height: 1.1
 .result-card div { display: flex; align-items: baseline; gap: 6px; }
 .result-card strong { min-width: 0; font-size: clamp(2.15rem, 11vw, 4rem); line-height: 1; letter-spacing: -0.06em; overflow-wrap: anywhere; }
 .result-card span { font-size: 1rem; font-weight: 750; }
+.result-card--total { grid-column: 1 / -1; min-height: 155px; background: var(--taro-soft); }
+.result-card--total p { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.result-card--total small { font-size: 0.82rem; font-weight: 600; }
 
 .settings-list { display: grid; gap: 10px; margin-bottom: 28px; }
 .settings-item {

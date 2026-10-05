@@ -1,6 +1,7 @@
 import {
   MATERIAL_FIELDS,
   calculateRecipe,
+  calculateTotalWeight,
   formatWeight,
   isRecipeConfigured,
   parseNonNegativeNumber,
@@ -125,6 +126,8 @@ function updateCalculation() {
     for (const field of MATERIAL_FIELDS) {
       document.querySelector(`[data-result="${field}"]`).textContent = formatWeight(result[field]);
     }
+    document.querySelector('[data-result="totalWeight"]').textContent =
+      String(calculateTotalWeight(parsed.value, result));
     weightMessage.textContent = `以 ${formatWeight(recipe.baseWeight)} g 基準配方計算`;
     resultsSection.hidden = false;
   } catch {
@@ -233,7 +236,14 @@ function registerWebMcpTools() {
     execute({ recipeId, rawWeight }) {
       const recipe = state.recipes[recipeId];
       if (!isRecipeConfigured(recipe)) throw new Error("此原料尚未設定完整配方");
-      return { recipe: recipe.name, rawWeight, unit: "g", materials: calculateRecipe(recipe, rawWeight) };
+      const materials = calculateRecipe(recipe, rawWeight);
+      return {
+        recipe: recipe.name,
+        rawWeight,
+        unit: "g",
+        materials,
+        totalWeight: calculateTotalWeight(rawWeight, materials),
+      };
     },
   });
 

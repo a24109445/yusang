@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { calculateRecipe, formatWeight, parseNonNegativeNumber } from "../js/calculator.js";
+import { calculateRecipe, calculateTotalWeight, formatWeight, parseNonNegativeNumber } from "../js/calculator.js";
 
 const recipe = {
   name: "芋頭",
@@ -41,6 +41,14 @@ test("小數、零與大重量不產生 NaN 或 Infinity", () => {
   }
   assert.equal(formatWeight(705.000000001), "705");
   assert.equal(formatWeight(117.5), "117.5");
+});
+
+test("總重為原料加四種材料，最後四捨五入至個位數", () => {
+  assert.equal(calculateTotalWeight(1000, calculateRecipe(recipe, 1000)), 1530);
+  assert.equal(calculateTotalWeight(2000, calculateRecipe(recipe, 2000)), 3060);
+  assert.equal(calculateTotalWeight(2350, calculateRecipe(recipe, 2350)), 3596);
+  assert.equal(calculateTotalWeight(0, calculateRecipe(recipe, 0)), 0);
+  assert.equal(calculateTotalWeight(999.5, calculateRecipe(recipe, 999.5)), 1529);
 });
 
 test("拒絕空白、負數、英文與特殊符號", () => {
