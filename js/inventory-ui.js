@@ -210,7 +210,7 @@ export function initInventoryUI({ showView, showToast }) {
       shipmentSubmitted = false;
       shipmentForm.elements.date.value = today();
       $("#shipment-fields").replaceChildren(...Object.entries(PACKAGE_DEFINITIONS).map(([id, name]) => numberField({
-        id: `quantity-${id}`, label: name, value: 0, unit: "包",
+        id: `quantity-${id}`, label: name, value: "", unit: "包",
         description: sumWeights(data.packaging[id]) > 0 ? `每包 ${weightText(sumWeights(data.packaging[id]))}${id === "mixed" ? ` · ${contentsText(data.packaging[id])}` : ""}` : "尚未設定每包重量",
       })));
       previewShipment();

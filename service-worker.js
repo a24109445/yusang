@@ -1,4 +1,4 @@
-const CACHE_NAME = "yusang-helper-v5";
+const CACHE_NAME = "yusang-helper-v6";
 const APP_SHELL = [
   "./",
   "./index.html",
