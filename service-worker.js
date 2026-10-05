@@ -1,4 +1,4 @@
-const CACHE_NAME = "yusang-helper-v3";
+const CACHE_NAME = "yusang-helper-v5";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -6,6 +6,8 @@ const APP_SHELL = [
   "./js/app.js",
   "./js/calculator.js",
   "./js/storage.js",
+  "./js/inventory.js",
+  "./js/inventory-ui.js",
   "./js/pwa.js",
   "./manifest.json",
   "./icons/icon-192.png",
@@ -43,6 +45,21 @@ self.addEventListener("fetch", (event) => {
           return response;
         })
         .catch(() => caches.match("./index.html")),
+    );
+    return;
+  }
+
+  if (event.request.destination === "script" || event.request.destination === "style") {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          if (response.ok) {
+            const copy = response.clone();
+            void caches.open(CACHE_NAME).then((cache) => cache.put(event.request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(event.request)),
     );
     return;
   }

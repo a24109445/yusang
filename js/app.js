@@ -14,6 +14,7 @@ import {
   resetRecipes,
   saveRecipes,
 } from "./storage.js";
+import { initInventoryUI, today } from "./inventory-ui.js";
 
 const MATERIAL_LABELS = Object.freeze({
   tapiocaStarch: "樹薯粉",
@@ -27,6 +28,8 @@ const state = {
   recipes: initialRecipes,
   currentRecipeId: null,
   toastTimer: null,
+  calculation: null,
+  productionRecorded: false,
 };
 
 const views = [...document.querySelectorAll("[data-view]")];
@@ -43,6 +46,9 @@ const importFile = document.querySelector("#import-file");
 const settingsDialog = document.querySelector("#settings-access-dialog");
 const resetDialog = document.querySelector("#reset-dialog");
 const toast = document.querySelector("#toast");
+const productionDate = document.querySelector("#production-date");
+const productionButton = document.querySelector("#record-production");
+const productionStatus = document.querySelector("#production-status");
 
 function showView(name) {
   for (const view of views) view.classList.toggle("view--active", view.dataset.view === name);
@@ -86,10 +92,14 @@ function renderSettingsList() {
 }
 
 function clearCalculation() {
+  state.calculation = null;
+  state.productionRecorded = false;
   rawWeightInput.value = "";
   resultsSection.hidden = true;
   weightMessage.textContent = "輸入處理完成後的重量";
   weightMessage.classList.remove("is-error");
+  productionButton.disabled = true;
+  productionStatus.textContent = "將此口味的總重加入庫存。";
 }
 
 function openCalculator(recipeId) {
@@ -97,6 +107,7 @@ function openCalculator(recipeId) {
   const recipe = state.recipes[recipeId];
   calculatorTitle.textContent = `${recipe.name}配方`;
   clearCalculation();
+  productionDate.value = today();
   unavailableNotice.hidden = isRecipeConfigured(recipe);
   rawWeightInput.disabled = !isRecipeConfigured(recipe);
   rawWeightInput.placeholder = isRecipeConfigured(recipe) ? "0" : "—";
@@ -105,6 +116,10 @@ function openCalculator(recipeId) {
 }
 
 function updateCalculation() {
+  state.calculation = null;
+  state.productionRecorded = false;
+  productionButton.disabled = true;
+  productionStatus.textContent = "將此口味的總重加入庫存。";
   const recipe = state.recipes[state.currentRecipeId];
   resultsSection.hidden = true;
   weightMessage.classList.remove("is-error");
@@ -126,13 +141,30 @@ function updateCalculation() {
     for (const field of MATERIAL_FIELDS) {
       document.querySelector(`[data-result="${field}"]`).textContent = formatWeight(result[field]);
     }
-    document.querySelector('[data-result="totalWeight"]').textContent =
-      String(calculateTotalWeight(parsed.value, result));
+    const totalResult = document.querySelector('[data-result="totalWeight"]');
+    const totalWeight = calculateTotalWeight(parsed.value, result);
+    totalResult.textContent = String(totalWeight);
+    totalResult.closest(".result-card").hidden = false;
+    state.calculation = { flavorId: state.currentRecipeId, weight: totalWeight };
+    productionButton.disabled = totalWeight <= 0;
     weightMessage.textContent = `以 ${formatWeight(recipe.baseWeight)} g 基準配方計算`;
     resultsSection.hidden = false;
   } catch {
     weightMessage.textContent = "無法計算，請檢查重量與配方設定";
     weightMessage.classList.add("is-error");
+  }
+}
+
+function recordProduction() {
+  if (!state.calculation || state.productionRecorded) return;
+  try {
+    inventoryUI.recordProduction({ ...state.calculation, date: productionDate.value });
+    state.productionRecorded = true;
+    productionButton.disabled = true;
+    productionStatus.textContent = "已記錄入庫。登記下一批時，請清除重量再重新輸入。";
+  } catch (error) {
+    productionStatus.textContent = error.message;
+    showToast(error.message);
   }
 }
 
@@ -261,6 +293,8 @@ function registerWebMcpTools() {
   });
 }
 
+const inventoryUI = initInventoryUI({ showView, showToast });
+
 document.addEventListener("click", (event) => {
   const recipeCard = event.target.closest("[data-recipe-id]");
   if (recipeCard) return openCalculator(recipeCard.dataset.recipeId);
@@ -274,6 +308,7 @@ document.addEventListener("click", (event) => {
     "go-home": () => showView("home"),
     "go-settings": openSettings,
     "clear-weight": () => { clearCalculation(); rawWeightInput.focus(); },
+    "record-production": recordProduction,
     "request-settings": requestSettingsAccess,
     "cancel-settings": () => settingsDialog.close(),
     "confirm-settings": () => { settingsDialog.close(); openSettings(); },

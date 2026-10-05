@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#4b2d4f">
-    <meta name="description" content="芋桑製作冷凍芋圓時使用的離線配方計算工具。">
+    <meta name="description" content="芋桑冷凍芋圓的配方比例、入庫紀錄與出貨庫存管理工具。">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="芋桑小幫手">
@@ -29,6 +29,10 @@
             </button>
           </header>
 
+          <nav class="module-nav" aria-label="功能切換">
+            <button class="module-nav__active" type="button" data-action="go-home" aria-current="page">原料比例計算</button>
+            <button type="button" data-stock-action="open-inventory">進出貨管理</button>
+          </nav>
           <div class="home-intro">
             <p class="eyebrow">配方計算</p>
             <h2>今天要做哪一種？</h2>
@@ -115,12 +119,100 @@
                 <p>糖</p>
                 <div><strong data-result="sugar">0</strong><span>g</span></div>
               </article>
-              <article class="result-card result-card--total">
+              <article class="result-card result-card--total" hidden>
                 <p>總重 <small>原料＋四種材料，四捨五入至整數</small></p>
                 <div><strong data-result="totalWeight">0</strong><span>g</span></div>
               </article>
             </div>
+            <div class="record-production">
+              <label for="production-date">入庫日期</label>
+              <input id="production-date" type="date" required>
+              <button class="primary-button" id="record-production" type="button" data-action="record-production">記錄並入庫</button>
+              <p id="production-status" class="field-message" role="status">將此口味的總重加入庫存。</p>
+            </div>
           </section>
+        </section>
+
+        <section class="view" data-view="inventory" aria-labelledby="inventory-title" tabindex="-1">
+          <header class="topbar">
+            <button class="back-button" type="button" data-action="go-home">← 返回首頁</button>
+            <button class="text-button" type="button" data-stock-action="open-packaging">每包重量設定</button>
+          </header>
+          <nav class="module-nav" aria-label="功能切換">
+            <button type="button" data-action="go-home">原料比例計算</button>
+            <button class="module-nav__active" type="button" data-stock-action="open-inventory" aria-current="page">進出貨管理</button>
+          </nav>
+          <div class="section-heading section-heading--compact">
+            <p class="eyebrow">STOCK & SHIPPING</p>
+            <h2 id="inventory-title">進出貨管理</h2>
+            <p>依入庫與出貨紀錄，計算五種口味的剩餘重量。</p>
+          </div>
+          <p id="inventory-error" class="form-error" role="alert" hidden></p>
+          <div id="stock-grid" class="stock-grid" aria-label="各口味庫存"></div>
+          <div class="inventory-actions">
+            <button class="primary-button" type="button" data-stock-action="open-shipment">新增出貨</button>
+            <button class="secondary-button" type="button" data-stock-action="open-incoming">手動入庫</button>
+          </div>
+          <section class="stock-history" aria-labelledby="history-title">
+            <div class="results-heading">
+              <div><p class="eyebrow">進出貨紀錄</p><h3 id="history-title">庫存流水帳</h3></div>
+              <label class="history-filter" for="history-filter">顯示
+                <select id="history-filter"><option value="all">全部</option><option value="in">入庫</option><option value="out">出貨</option></select>
+              </label>
+            </div>
+            <div id="stock-history-list" class="history-list" aria-live="polite"></div>
+            <button class="secondary-button" type="button" data-stock-action="more-history" id="more-history" hidden>載入更多紀錄</button>
+          </section>
+          <section class="utility-panel" aria-labelledby="inventory-backup-title">
+            <div class="utility-panel__heading"><p class="eyebrow">僅儲存在此裝置</p><h3 id="inventory-backup-title">庫存備份</h3></div>
+            <p>備份包含每包重量設定與所有進出貨紀錄。換手機或清除瀏覽器資料前，請分別匯出庫存與配方備份。</p>
+            <div class="button-stack">
+              <button class="primary-button" type="button" data-stock-action="export-inventory">匯出庫存備份</button>
+              <button class="secondary-button" type="button" data-stock-action="import-inventory">匯入庫存備份</button>
+              <input id="inventory-import-file" type="file" accept="application/json,.json" hidden>
+            </div>
+          </section>
+        </section>
+
+        <section class="view" data-view="incoming" aria-labelledby="incoming-title" tabindex="-1">
+          <header class="topbar"><button class="back-button" type="button" data-stock-action="open-inventory">← 返回庫存</button><p class="topbar__context">增加庫存</p></header>
+          <div class="section-heading section-heading--compact"><p class="eyebrow">入庫</p><h2 id="incoming-title">手動入庫</h2><p>補登既有庫存或已製作完成的總重；配方計算頁也可直接記錄入庫。</p></div>
+          <form id="incoming-form" class="recipe-form" novalidate>
+            <div class="form-field"><label for="incoming-date">入庫日期</label><input id="incoming-date" name="date" type="date" required></div>
+            <div class="form-field"><label for="incoming-flavor">口味</label><select id="incoming-flavor" name="flavorId"><option value="sweetPotato">地瓜</option><option value="purpleSweetPotato">紫心地瓜</option><option value="taro">芋頭</option><option value="yam">山藥</option><option value="potato">馬鈴薯</option></select></div>
+            <div class="form-field"><label for="incoming-weight">入庫總重</label><div class="unit-input"><input id="incoming-weight" name="weight" type="text" inputmode="decimal" autocomplete="off" required><span>g</span></div></div>
+            <p id="incoming-error" class="form-error" role="alert" hidden></p>
+            <button class="primary-button primary-button--save" type="submit">送出並入庫</button>
+          </form>
+        </section>
+
+        <section class="view" data-view="shipment" aria-labelledby="shipment-title" tabindex="-1">
+          <header class="topbar"><button class="back-button" type="button" data-stock-action="open-inventory">← 返回庫存</button><button class="text-button" type="button" data-stock-action="open-packaging">每包重量設定</button></header>
+          <div class="section-heading section-heading--compact"><p class="eyebrow">出貨</p><h2 id="shipment-title">今天出幾包？</h2><p>填寫各種包裝的包數。綜合包會依設定扣除五種口味各自的重量。</p></div>
+          <form id="shipment-form" class="recipe-form" novalidate>
+            <div class="form-field"><label for="shipment-date">出貨日期</label><input id="shipment-date" name="date" type="date" required></div>
+            <div id="shipment-fields" class="recipe-form"></div>
+            <section class="shipment-preview" aria-labelledby="shipment-preview-title"><h3 id="shipment-preview-title">本次扣庫存預覽</h3><div id="shipment-preview" aria-live="polite"></div></section>
+            <p id="shipment-error" class="form-error" role="alert" hidden></p>
+            <button id="submit-shipment" class="primary-button primary-button--save" type="submit" disabled>送出出貨並扣庫存</button>
+          </form>
+        </section>
+
+        <section class="view" data-view="packaging" aria-labelledby="packaging-title" tabindex="-1">
+          <header class="topbar"><button class="back-button" type="button" data-stock-action="open-inventory">← 返回庫存</button><p class="topbar__context">管理設定</p></header>
+          <div class="section-heading section-heading--compact"><p class="eyebrow">包裝重量</p><h2 id="packaging-title">每包重量設定</h2><p>選擇包裝，輸入一包內各口味的重量。設定只影響之後的出貨，不會更動舊紀錄。</p></div>
+          <div id="packaging-list" class="settings-list"></div>
+        </section>
+
+        <section class="view" data-view="package-editor" aria-labelledby="package-editor-title" tabindex="-1">
+          <header class="topbar"><button class="back-button" type="button" data-stock-action="open-packaging">← 返回包裝設定</button><p class="topbar__context">一包的內容</p></header>
+          <div class="section-heading section-heading--compact"><p class="eyebrow">每包重量</p><h2 id="package-editor-title">綜合</h2><p id="package-editor-description"></p></div>
+          <form id="package-form" class="recipe-form" novalidate>
+            <div id="package-fields" class="recipe-form"></div>
+            <p id="package-total" class="field-message" aria-live="polite"></p>
+            <p id="package-error" class="form-error" role="alert" hidden></p>
+            <button class="primary-button primary-button--save" type="submit">儲存每包重量</button>
+          </form>
         </section>
 
         <section class="view" data-view="settings" aria-labelledby="settings-title" tabindex="-1">
@@ -226,6 +318,12 @@
         <button class="secondary-button" type="button" data-action="cancel-reset">取消</button>
         <button class="danger-confirm-button" type="button" data-action="confirm-reset">確定清除</button>
       </div>
+    </dialog>
+
+    <dialog id="stock-confirm-dialog" class="app-dialog">
+      <h2 id="stock-confirm-title">確認操作</h2>
+      <p id="stock-confirm-message"></p>
+      <div class="dialog-actions"><button class="secondary-button" type="button" data-stock-action="cancel-confirm">取消</button><button class="primary-button" type="button" data-stock-action="confirm-stock">確認</button></div>
     </dialog>
 
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
